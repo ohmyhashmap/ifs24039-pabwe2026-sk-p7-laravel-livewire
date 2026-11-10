@@ -17,11 +17,11 @@ class StockPolicy
 
     /**
      * Determine whether the user can view the model.
-     * Admin can view any user's stock (read-only); member can only view their own.
+     * Authenticated users can view stock details; only owners can modify them.
      */
     public function view(User $user, Stock $stock): bool
     {
-        return $user->isAdmin() || $user->id === $stock->user_id;
+        return true;
     }
 
     /**
@@ -50,4 +50,3 @@ class StockPolicy
         return $user->id === $stock->user_id;
     }
 }
-

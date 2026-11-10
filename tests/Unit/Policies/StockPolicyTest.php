@@ -14,15 +14,15 @@ class StockPolicyTest extends TestCase
 
     public function test_view_any(): void
     {
-        $policy = new StockPolicy();
+        $policy = new StockPolicy;
         $user = User::factory()->create();
 
         $this->assertTrue($policy->viewAny($user));
     }
 
-    public function test_view_policy(): void
+    public function test_any_authenticated_user_can_view_stock(): void
     {
-        $policy = new StockPolicy();
+        $policy = new StockPolicy;
         $owner = User::factory()->member()->create();
         $otherMember = User::factory()->member()->create();
         $admin = User::factory()->admin()->create();
@@ -31,12 +31,12 @@ class StockPolicyTest extends TestCase
 
         $this->assertTrue($policy->view($owner, $stock));
         $this->assertTrue($policy->view($admin, $stock));
-        $this->assertFalse($policy->view($otherMember, $stock));
+        $this->assertTrue($policy->view($otherMember, $stock));
     }
 
     public function test_create_policy(): void
     {
-        $policy = new StockPolicy();
+        $policy = new StockPolicy;
         $user = User::factory()->create();
 
         $this->assertTrue($policy->create($user));
@@ -44,7 +44,7 @@ class StockPolicyTest extends TestCase
 
     public function test_update_policy(): void
     {
-        $policy = new StockPolicy();
+        $policy = new StockPolicy;
         $owner = User::factory()->member()->create();
         $otherMember = User::factory()->member()->create();
         $admin = User::factory()->admin()->create();
@@ -58,7 +58,7 @@ class StockPolicyTest extends TestCase
 
     public function test_delete_policy(): void
     {
-        $policy = new StockPolicy();
+        $policy = new StockPolicy;
         $owner = User::factory()->member()->create();
         $otherMember = User::factory()->member()->create();
         $admin = User::factory()->admin()->create();
@@ -70,4 +70,3 @@ class StockPolicyTest extends TestCase
         $this->assertFalse($policy->delete($admin, $stock)); // Admin cannot delete other's stocks
     }
 }
-

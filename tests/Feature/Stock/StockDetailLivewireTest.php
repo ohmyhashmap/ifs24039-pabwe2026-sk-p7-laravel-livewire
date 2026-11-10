@@ -23,17 +23,23 @@ class StockDetailLivewireTest extends TestCase
             ->assertRedirect(route('login'));
     }
 
-    public function test_member_cannot_access_other_member_stock(): void
+    public function test_member_can_view_stock_details_owned_by_other_members(): void
     {
-        $owner = User::factory()->member()->create();
+        $owners = User::factory()->member()->count(2)->create();
         $otherMember = User::factory()->member()->create();
 
-        $stock = Stock::factory()->create(['user_id' => $owner->id]);
+        $stocks = collect([
+            Stock::factory()->create(['user_id' => $owners[0]->id, 'name' => 'Stok pengguna pertama']),
+            Stock::factory()->create(['user_id' => $owners[1]->id, 'name' => 'Stok pengguna kedua']),
+        ]);
 
         $this->actingAs($otherMember);
 
-        $this->get(route('stocks.show', $stock->id))
-            ->assertStatus(403);
+        foreach ($stocks as $stock) {
+            $this->get(route('stocks.show', $stock->id))
+                ->assertOk()
+                ->assertSee($stock->name);
+        }
     }
 
     public function test_member_can_view_own_stock_detail(): void
